@@ -27,6 +27,7 @@ namespace LibraryFacadeExample
             checkPassword = new CheckPassword();
             nameCheck = new UserNameCheck();
             bookCheck = new BookCheck();
+            bookCheck.AddBook();
         }
 
         public string GetUserName()
@@ -39,26 +40,43 @@ namespace LibraryFacadeExample
 
         public void OpenLibrary()
         {
-            bookCheck.AddBook();
             bookCheck.GetBooks();
             if (nameCheck.CheckUserName(GetUserName()) && checkPassword.PasswordCheck(GetPassword()))
             {
-                Console.Write("Please select the operation you want to perform:\n" +
-                    "1.Rent Book\n" +
-                    "2.Return Book\n ");
-                int selection;
-                Int32.TryParse(Console.ReadLine(), out selection);
-                if (selection == 1)
+                try
                 {
-                    Console.Write("Please write the name of the book you want to rent.");
-                    string nameofBook = Console.ReadLine();
-                    RentBook(nameofBook);
+                    Console.Write("Please select the operation you want to perform:\n" +
+                        "1.Rent Book\n" +
+                        "2.Return Book\n" +
+                        "0.Exit Program.");
+                    int selection;
+                    Int32.TryParse(Console.ReadLine(), out selection);
+                    if (selection == 1)
+                    {
+                        Console.Write("Please write the name of the book you want to rent.");
+                        string nameofBook = Console.ReadLine();
+                        RentBook(nameofBook);
+                    }
+                    if (selection == 2)
+                    {
+                        Console.Write("Please write the name of the book you want to return.");
+                        string nameofBook = Console.ReadLine();
+                        ReturnBook(nameofBook);
+                    }
+                    if (selection == 0)
+                    {
+                        Console.WriteLine("Exiting.");
+                        return;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Please enter a valid selection.");
+                    }
                 }
-                if (selection == 2)
+                catch (ArgumentException ex)
                 {
-                    Console.Write("Please write the name of the book you want to return.");
-                    string nameofBook = Console.ReadLine();
-                    ReturnBook(nameofBook);
+                    Console.WriteLine(ex.Message);
+                    OpenLibrary();
                 }
             }
             else
